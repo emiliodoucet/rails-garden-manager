@@ -1,9 +1,10 @@
 class GardensController < ApplicationController
   def index
-    if params[:search]
-      @gardens = Garden.find_by_sql("SELECT * FROM gardens WHERE name ILIKE '%#{params[:search]}%'")
+    if params[:search].present?
+      @gardens = Garden.includes(:plants)
+                       .where("name ILIKE ?", "%#{params[:search]}%")
     else
-      @gardens = Garden.all
+      @gardens = Garden.includes(:plants).all
     end
   end
 
